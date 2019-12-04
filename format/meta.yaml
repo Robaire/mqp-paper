@@ -1,0 +1,10 @@
+---
+title: "Design and Analysis of a CubeSat"
+author: ["Robaire Galliath", "Oliver Hasson", "Andrew Montero", "Christopher Renfro", "David Resmini"]
+abstract: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac condimentum eros. Sed quis est eu ante ultrices rhoncus. Praesent a odio eget dolor hendrerit tincidunt. Proin ullamcorper lacus odio, nec dignissim enim hendrerit vitae. Quisque quis risus tellus. Sed sit amet lectus non massa accumsan malesuada. Aenean purus erat, fringilla id ante et, finibus vehicula ex. Sed a ex mi. Duis nec libero ex. Donec aliquam eu tortor quis sodales. Nulla vel urna vitae tellus accumsan bibendum ut quis purus. Sed at ipsum nibh. Fusce erat nulla, aliquet pretium tempor ut, facilisis non sem."
+lof: true
+lot: true
+toc: true
+numbersections: true
+geometry: margin=1in
+---
