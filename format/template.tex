@@ -196,10 +196,7 @@ $if(dir)$
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
 $endif$
-$if(natbib)$
-\usepackage[$natbiboptions$]{natbib}
-\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
-$endif$
+
 $if(biblatex)$
 \usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
 $for(bibliography)$
@@ -233,36 +230,52 @@ $endif$
 
 \begin{document}
 \pagenumbering{gobble} % dont number first page
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Title Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace*{9mm}
+
 \begin{center}
-{\Huge Design and Analysis of a CubeSat}\\[4mm]
-{\Large \textit{Major Qualifying Project}}\\
-\vspace{6.5mm}
-{\large Advisor:}\\
-\vspace{6.5mm}
-{\large\textsc{Michael Demetriou}}\\
-\vspace{6.5mm}
-{\large Written By:}\\
-\vspace{6.5mm}
-{\large\textsc{Robaire Galliath, Oliver Hasson, Andrew Montero, Christopher Renfro, Devid Resmini}}\\
-\vspace{11mm}
-\includegraphics[height=30mm]{format/logo.png}\\
-\vspace{6mm}
-{\large A Major Qualifying Project\\
-\textsc{Worcester Polytechnic Institute}}\\
-\vspace{11mm}
+
+{\Huge Design and Analysis of a CubeSat}\\
+\vspace{8mm}
+{\Large \textit{A Major Qualifying Project}}\\
+\vspace{10mm}
+
+{\large \textbf{Submitted By:}\\
+\vspace{4mm}
+\textsc{
+    Robaire Galliath\\
+    \vspace{4mm}
+    Oliver Hasson\\
+    \vspace{4mm}
+    Andrew Montero\\
+    \vspace{4mm}
+    Chistopher Renfro\\
+    \vspace{4mm}
+    David Resmini
+}}
+\vspace{10mm}
+
+{\large \textbf{Submitted To:}\\
+\vspace{4mm}
+\textsc{
+    Professor Michael A. Demetriou   
+}}
+
+\vspace{22mm}
+\includegraphics[height=40mm]{format/logo.png}\\
+\vspace{22mm}
 \begin{minipage}{10cm}
 \centering
-Submitted to the Faculty of the Worcester Polytechnic Institute in partial fulfillment of the requirements for the Degree of Bachelor of Engineering in Aerospace Engineering.
+Submitted to the Faculty of the Worcester Polytechnic Institute in partial fulfillment of the requirements for the Degree of Bachelor of Science in Aerospace Engineering.
 \end{minipage}\\
 \vspace{9mm}
-{\large\textsc{ January 2019 - March 2020}}
+{\large\textsc{August 2019 - March 2020}}
 \vspace{12mm}
 \end{center}
 \clearpage
-%%%%%%%%%%%%%%%%%%%%%%%%% Table of Contents, Table of fig, etc. %%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%% Table of Contents, Table of fig, etc. %%%%%%%%%%%%%%%%%%%%%%%
 $for(include-before)$
 $include-before$
 $endfor$
@@ -289,16 +302,21 @@ $if(lof)$
 \listoffigures
 $endif$
 \clearpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Main paper %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagenumbering{arabic}
+
+% Create the abstract
 $if(abstract)$
 \begin{abstract}
 $abstract$
 \end{abstract}
 $endif$
+
+% Main Body
 $body$
 
-$if(natbib)$
+% Create the bilbiography
 $if(bibliography)$
 $if(biblio-title)$
 $if(book-class)$
@@ -307,30 +325,15 @@ $else$
 \renewcommand\refname{$biblio-title$}
 $endif$
 $endif$
-$if(beamer)$
-\begin{frame}[allowframebreaks]{$biblio-title$}
-\bibliographytrue
-$endif$
 \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
-$if(beamer)$
-\end{frame}
 $endif$
 
-$endif$
-$endif$
 $if(biblatex)$
-$if(beamer)$
-\begin{frame}[allowframebreaks]{$biblio-title$}
-\bibliographytrue
-\printbibliography[heading=none]
-\end{frame}
-$else$
 \printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
 $endif$
 
-$endif$
 $for(include-after)$
 $include-after$
-
 $endfor$
+
 \end{document}
