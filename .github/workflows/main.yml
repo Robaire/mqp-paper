@@ -7,7 +7,7 @@ jobs:
     steps:
     - name: Conversion
       id: convert
-      uses: robaire/pandoc-action@v1
+      uses: actions/pandoc-action@v1
 
     - name: Get the log output
       run: echo "${{ steps.convert.outputs.log }}"
