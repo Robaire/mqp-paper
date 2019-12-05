@@ -1,0 +1,13 @@
+name: Document Conversion
+
+on: push
+
+jobs:
+  convert_via_pandoc:
+    name: Convert Via Pandoc
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: maxheld83/pandoc@v2
+        with:
+          args: "--filter=pandoc-xnos --filter=pandoc-citeproc --bibliography=sections/bibliography.bib --csl=format/apa.csl --template=format/template.tex format/meta.yaml sections/intro.md sections/references.md -o report.pdf"
