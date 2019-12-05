@@ -1,0 +1,14 @@
+on: [push]
+
+jobs:
+  pandoc_conversion:
+    runs-on: ubuntu-latest
+    name: Converts Markdown to PDF
+    steps:
+    - name: Conversion
+      id: convert
+      uses: robaire/pandoc-action
+
+    - name: Get the log output
+      run: echo "${{ steps.convert.outputs.log }}"
+        
