@@ -1,5 +1,5 @@
 
-FILES = format/meta.yaml sections/intro.md sections/references.md
+FILES = format/meta.yaml sections/introduction.md sections/background.md sections/analysis.md sections/results.md sections/references.md
 FLAGS = --filter=pandoc-xnos --filter=pandoc-citeproc --bibliography=sections/bibliography.bib --csl=format/apa.csl --template=format/template.tex
 
 all: report
