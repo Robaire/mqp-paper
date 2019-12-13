@@ -129,27 +129,29 @@ Simulink allows for users to specify passband edge frequency and stopband edge f
 In theory, this also means that if we were spinning fast enough, it would filter out that too, and make the satellite spin faster. However, because we are using gyroscope measurements as a second reference, this situation would not occur. The derivative of the signal was then found using another ‘discrete derivative’ block, to give us the filtered rate of change of the magnetic field, or $\Dot{B}$.
 
 ## Reaction Wheel Sizing
+
+The reaction wheels selected for the CubeSat had to be capable of producing enough torque to counteract the disturbance torques on the satellite. First, the gravitational torque was defined by:
+
 $$ T_g = \frac{3M}{2R^3}|I_x - I_y|sin(2\theta) $$
 
-Where $\theta$ is equal to 5$^{\circ}$, or 0.0872005 radians, M is the mass of the Earth, $3.9816x10^{14}\frac{m^3}{s^2}$ and R is the radius of the earth, $6.978x10^6m$.
+Where $\theta$ is equal to 5$^{\circ}$, or 0.0872005 radians, M is the mass of the Earth, $3.9816x10^{14}\frac{m^3}{s^2}$ and R is the radius of the earth, $6.978x10^6m$. The next disturbance torque needed to be accounted for was the torque due to solar pressure. This was defined by:
 
 $$ T_{sp} = F(C_{ps} - C_g) $$
 
-Where $C_{ps}$ is the center of solar pressure and $C_g$ is the center of gravity.
+Where $C_{ps}$ is the center of solar pressure and $C_g$ is the center of gravity. The flux due to solar pressure, $F$ is defined as:
 
 $$ F = \frac{F_s}{c}A_s(1+q)cos(l) $$
 
-Where l is the angle of incidence to the Sun, $F_s$, is the BLANK, $1.367 \frac{W}{m^2}$ c is the speed of light, $3x10^8 \frac{m}{s}$, $A_s$ is the BLANK, 0.01 m and q is the coefficient of reflection, 0.6. We can then find the torque on the vehicle by using the equation below.
+Where l is the angle of incidence to the Sun, $F_s$, is the solar flux constant , $1.367 \frac{W}{m^2}$, c is the speed of light, $3x10^8 \frac{m}{s}$, $A_s$ is the surface area of the RAM facing surface, 0.02 m, and q is the coefficient of reflection, 0.6. Next We can then calculate the torque due to the magnetic field by the following equation:
 
 $$ T_m = DB $$
 
-Where D is equal to the dipole moment of the vehicle and B is the Earth's magnetic field.
+Where D is equal to the dipole moment of the vehicle and B is the Earth's magnetic field. The final disturbance torque to consider was the torque due to aerodynamic pressure. This was defined as:
 
 $$ T_a = 0.5[\rho C_d A_s V^2](C_{pa}-C_g) $$
 
-Where V is the velocity of the vehicle and $C_{pa}$ is the center of WHAT IS THIS LETTER pressure.
-
-Torque Reaction Wheel Sizing, $T_{rw}$
+Where V is the velocity of the vehicle and $C_{pa}$ is the center of aerodynamic pressure.
+With all of the disturbance torques calculated and summed, we now had a known value for the disturbance torques we needed to overcome. To find the torque for the reaction wheel sizing, $T_{rw}$, we evaluated the following expression:
 
 $$ T_{rw} = T_D(M_f) $$
 
@@ -159,7 +161,6 @@ Finally, the momentum storage can be calculated by:
 $$ h = T_D\frac{t}{4}(0.707) $$
 
 Where t is the orbital period, in seconds and 0.707 is the rms average of a sinusoidal function.
-
 
 ## Simulink Control
 
@@ -175,6 +176,20 @@ The second control law block, it is a direct improvement on the first control la
 #### Control Activation Delay
 In order to meet any potential guidelines for launching from the ISS, this block gives us the option of delaying the activation of the active controls until a set amount of time has passed. This also has the benefit of allowing our controls to ignore the initial transient signals that result from differences between initial conditions and initial estimates upon simulation start up. This block is very simple and does not apply a signal delay to the commanded torques when they are allowed to pass. In addition, it does nothing to any disturbance torques that may be added to the simulation regardless of simulation time or set delay.
 
-## Attitude Maintenance 
+## STK
+
+Systems Tool Kit, or STK, is a physics-based software packaged created by Analytical Graphics (AGI). STK allows engineers to perform analyses of ground, sea air and space objects in their respective environments. STK is used in government, commercial and defense applications around the world to determine the attitude, spatial relationships and time-dynamic positions of objects under many simultaneous constraints. STK’s ability to simulate subsystems like ADC is what makes the software so valuable to the aerospace industry. Our team considered using STK to simulate the detumbling and attitude control of our 6U CubeSat. An example of the simulation can be seen below.
+
+![STK Satellite View](./images/stk.png){#fig:stk}
+
+The figure above contains a snapshot of our CubeSat in its simulated elliptical orbit. STK has the ability to overlay particular orbital elements as vectors, such as sun vector and the nadir vector. Attitude determination in STK is done primarily with the use of quaternions. We originally intended on integrating directly between STK and MATLAB. MATLAB was to be used as our attitude determination and controller, whereas STK was simply to be used as a visual simulation, with the potential of utilizing it for sensor readings such as magnetic field and the sun vector. Utilizing the work of Xiang Fang and Yunhai Geng of the Research Center of Satellite Technology of Harbin Institute of Technology (CITATION) Fang and Gent laid out detailed steps into the integration of MATLAB into a real-time running STK environment. MATLAB was to be used to introduce sensor noise, whether that be from MATLAB simulated sensors, or STK sensors with their data passed into MATLAB. We would then pass the noisy sensor data through an extended Kalman Filter (EKF) prior to being sent to the controller. This EKF-processed data could be compared to the full state vector to check on the functionality of our EKF. Attitude control commands would then be sent to the controller flow, and then pass the data back into the STK environment for visual simulation, completing the loop.
+
+![STK-Matlab Integration Workflow](./images/stk-matlab.png){#fig:stk-matlab width=50%}
+
+Although without any code snippets or a codebase to be referenced, it is possible to integrate MATLAB into STK using the above figure and aforementioned paper as a guide. However, our focus changed from purely using MATLAB for our attitude and orbital simulation and control, to primarily utilizing Simulink into our control scheme.
+
+![Matlab CubeSat Simulation Toolbox](./images/cubesat-toolbox.png){#fig:cubesat-toolbox}
+
+Since changing our focus to Simulink, the MATLAB to STK integration has become less realistic of a goal, especially with the introduction of the Aerospace Blockset CubeSat Simulation Library, which included an orbital propagator, which simulates in 3-D the orbital and attitude elements of a CubeSat. We will utilize this CubeSat Simulation Library along with using a Level-2 S-Function block, which will connect our Simulink controller to a STK environment, similar to what we had planned with MATLAB. Similar to our approach outlined above, Simulink will do all of the spacecraft control, and STK will merely model and return whatever sensor data we request.
 
 ## System Power Requirements
